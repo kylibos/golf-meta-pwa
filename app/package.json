@@ -20,6 +20,8 @@
   },
   "dependencies": {
     "@polymer/app-layout": "^3.0.0",
+    "@polymer/paper-button": "github:PolymerElements/paper-button",
+    "@polymer/paper-dialog": "github:PolymerElements/paper-dialog",
     "@polymer/polymer": "^3.1.0",
     "@webcomponents/webcomponentsjs": "^2.2.4",
     "lit-element": "^2.0.1",
