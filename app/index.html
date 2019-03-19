@@ -81,6 +81,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       window.process = { env: { NODE_ENV: 'production' } };
     </script>
 
+    <script src="https://www.gstatic.com/firebasejs/5.9.0/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      if (window.location.hostname == 'www.golfmeta.com'){
+
+      } else {
+        console.log('DEV FIREBASE PROJECT');
+        var config = {
+          apiKey: "AIzaSyBwLD9Zz3OgXt-3D7jex8cfd0F3prp_G54",
+          authDomain: "golf-meta-dev.firebaseapp.com",
+          databaseURL: "https://golf-meta-dev.firebaseio.com",
+          projectId: "golf-meta-dev",
+          storageBucket: "golf-meta-dev.appspot.com",
+          messagingSenderId: "823322072217"
+        };
+      }
+      firebase.initializeApp(config);
+    </script>
 
     <!-- Add any global styles for body, document, etc. -->
     <style>
