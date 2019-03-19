@@ -272,7 +272,6 @@ class GolfMetaApp extends connect(store)(LitElement) {
   }
 
   stateChanged(state) {
-    console.log(state);
     this._page = state.app.page;
     this._offline = state.app.offline;
     this._snackbarOpened = state.app.snackbarOpened;
