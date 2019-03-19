@@ -26,6 +26,15 @@ class GolfMetaHome extends PageViewElement {
   render() {
     return html`
       <div>Home</div>
+      <div>Home</div>
+      <div>Home</div>
+      <div>Home</div>
+      <div>Home</div>
+      <div>Home</div>
+      <div>Home</div>
+      <div>Home</div>
+      <div>Home</div>
+      <div>Home</div>
     `;
   }
 
