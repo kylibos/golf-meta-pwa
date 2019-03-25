@@ -211,8 +211,8 @@ class GolfMetaApp extends connect(store)(LitElement) {
       <app-header condenses reveals effects="waterfall">
 
         <app-toolbar class="toolbar-top">
-          <button class="menu-btn" title="Menu" @click="${this._menuButtonClicked}">${menuIcon}</button>
           <div main-title>${this.appTitle}</div>
+          <div @click="${this.popSignIn}">Sign In</div>
         </app-toolbar>
       </app-header>
       
@@ -233,6 +233,10 @@ class GolfMetaApp extends connect(store)(LitElement) {
       <snack-bar ?active="${this._snackbarOpened}">
         You are now ${this._offline ? 'offline' : 'online'}.
       </snack-bar>
+
+      <paper-dialog id="signInDialog">
+        <div @click="${this.signInGoogle}">Sign-In with Google</div>
+      </paper-dialog>
 
     `;
   }
@@ -266,6 +270,10 @@ class GolfMetaApp extends connect(store)(LitElement) {
 
   updateNum(){
     this.num++;
+  }
+
+  popSignIn(){
+    this.shadowRoot.getElementById('signInDialog').open();
   }
 
   signInGithub(){
