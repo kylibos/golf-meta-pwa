@@ -48,6 +48,9 @@ class MyView2 extends connect(store)(PageViewElement) {
   render() {
     return html`
       <section>
+        <video id="video" width="320" height="240" controls>
+          <source src="http://techslides.com/demos/sample-videos/small.mp4" type="video/mp4">
+        </video>
         <h2>Redux example: simple counter</h2>
         <div class="circle">${this._value}</div>
         <p>This page contains a reusable <code>&lt;counter-element&gt;</code>. The

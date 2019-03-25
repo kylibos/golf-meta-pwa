@@ -13,6 +13,10 @@ import { PageViewElement } from './page-view-element.js';
 
 // These are the shared styles needed by this element.
 import { SharedStyles } from './shared-styles.js';
+import {PolymerElement} from '@polymer/polymer';
+
+import '@polymer/paper-dialog/paper-dialog.js';
+import '@polymer/paper-button/paper-button.js';
 
 class GolfMetaHome extends PageViewElement {
 
@@ -37,7 +41,6 @@ class GolfMetaHome extends PageViewElement {
       <div>Home</div>
     `;
   }
-
 
 }
 

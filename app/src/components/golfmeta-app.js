@@ -6,7 +6,7 @@ The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
 The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
-*/
+*/    
 
 import { LitElement, html, css } from 'lit-element';
 import { setPassiveTouchGestures } from '@polymer/polymer/lib/utils/settings.js';
@@ -34,6 +34,10 @@ import '@polymer/app-layout/app-toolbar/app-toolbar.js';
 import { menuIcon } from './my-icons.js';
 import './snack-bar.js';
 
+//firebase
+import { firestore } from '../firebase.js';
+import { auth } from '../firebase.js';
+
 class GolfMetaApp extends connect(store)(LitElement) {
   static get properties() {
     return {
@@ -41,7 +45,16 @@ class GolfMetaApp extends connect(store)(LitElement) {
       _page: { type: String },
       _drawerOpened: { type: Boolean },
       _snackbarOpened: { type: Boolean },
-      _offline: { type: Boolean }
+      _offline: { type: Boolean },
+      user: {type: Object},
+      num: {type: Number},
+      signedIn: {
+        type: Boolean, 
+        reflect: true,
+        hasChanged(newVal, oldVal) {
+          console.log('newVal', newVal);
+        }
+      }
     };
   }
 
@@ -206,6 +219,11 @@ class GolfMetaApp extends connect(store)(LitElement) {
           <a ?selected="${this._page === 'home'}" href="/home">Home</a>
           <a ?selected="${this._page === 'view2'}" href="/view2">View Two</a>
           <a ?selected="${this._page === 'view3'}" href="/view3">View Three</a>
+          <div>${this.num} <paper-button @click="${this.updateNum}">Up Num</paper-button></div>
+          <div>${this.signedIn}</div>
+          ${this.user?
+    html`${this.user.displayName}<paper-button @click="${this.handleLogout}">Logout</paper-button>`:
+    html`<paper-button @click="${this.signInGithub}">Sign IN with Github</paper-button><paper-button @click="${this.signInGoogle}">Sign IN with Google</paper-button>`}
         </nav>
       </app-header>
 
@@ -232,17 +250,102 @@ class GolfMetaApp extends connect(store)(LitElement) {
         <p>Made with &hearts; by the Polymer team.</p>
       </footer>
 
+
       <snack-bar ?active="${this._snackbarOpened}">
         You are now ${this._offline ? 'offline' : 'online'}.
       </snack-bar>
     `;
   }
 
+
+
+
+
   constructor() {
     super();
     // To force all event listeners for gestures to be passive.
     // See https://www.polymer-project.org/3.0/docs/devguide/settings#setting-passive-touch-gestures
     setPassiveTouchGestures(true);
+    this.signedIn = false;
+    this.num = 99;
+
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        // User is signed in.
+        console.log('user', user);
+        this.user = user;
+        console.log('set signedIn to true');
+        this.signedIn = true;
+        console.log('signed in', this.signedIn);
+        this.num++;
+        //this.requestUpdate();
+        console.log(this.num);
+      } else {
+        // No user is signed in.
+        console.log('no user');
+        this.user = false;
+        this.signedIn = false;
+        this.num++;
+      }
+    });
+  }
+
+  updateNum(){
+    console.log('update num');
+    this.num++;
+  }
+
+  signInGithub(){
+
+    var provider = new firebase.auth.GithubAuthProvider();
+    auth.signInWithPopup(provider).then(function(result) {
+  console.log(result);
+  // This gives you a Google Access Token. You can use it to access the Google API.
+  var token = result.credential.accessToken;
+  // The signed-in user info.
+  var user = result.user;
+  console.log(user);
+  // ...
+}).catch(function(error) {
+  console.log(error);
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  // The email of the user's account used.
+  var email = error.email;
+  // The firebase.auth.AuthCredential type that was used.
+  var credential = error.credential;
+  // ...
+});
+  }
+
+  signInGoogle(){
+
+    var provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider).then(function(result) {
+  console.log(result);
+  // This gives you a Google Access Token. You can use it to access the Google API.
+  var token = result.credential.accessToken;
+  // The signed-in user info.
+  var user = result.user;
+  console.log(user);
+  // ...
+}).catch(function(error) {
+  console.log(error);
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  // The email of the user's account used.
+  var email = error.email;
+  // The firebase.auth.AuthCredential type that was used.
+  var credential = error.credential;
+  // ...
+});
+  }
+
+  handleLogout(){
+    console.log('logged out');
+    auth.signOut();
   }
 
   firstUpdated() {
