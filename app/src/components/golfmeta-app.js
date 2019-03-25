@@ -209,34 +209,13 @@ class GolfMetaApp extends connect(store)(LitElement) {
     return html`
       <!-- Header -->
       <app-header condenses reveals effects="waterfall">
+
         <app-toolbar class="toolbar-top">
           <button class="menu-btn" title="Menu" @click="${this._menuButtonClicked}">${menuIcon}</button>
           <div main-title>${this.appTitle}</div>
         </app-toolbar>
-
-        <!-- This gets hidden on a small screen-->
-        <nav class="toolbar-list">
-          <a ?selected="${this._page === 'home'}" href="/home">Home</a>
-          <a ?selected="${this._page === 'view2'}" href="/view2">View Two</a>
-          <a ?selected="${this._page === 'view3'}" href="/view3">View Three</a>
-          <div>${this.num} <paper-button @click="${this.updateNum}">Up Num</paper-button></div>
-          <div>${this.signedIn}</div>
-          ${this.user?
-    html`${this.user.displayName}<paper-button @click="${this.handleLogout}">Logout</paper-button>`:
-    html`<paper-button @click="${this.signInGithub}">Sign IN with Github</paper-button><paper-button @click="${this.signInGoogle}">Sign IN with Google</paper-button>`}
-        </nav>
       </app-header>
-
-      <!-- Drawer content -->
-      <app-drawer
-          .opened="${this._drawerOpened}"
-          @opened-changed="${this._drawerOpenedChanged}">
-        <nav class="drawer-list">
-          <a ?selected="${this._page === 'home'}" href="/home">Home</a>
-          <a ?selected="${this._page === 'view2'}" href="/view2">View Two</a>
-          <a ?selected="${this._page === 'view3'}" href="/view3">View Three</a>
-        </nav>
-      </app-drawer>
+      
 
       <!-- Main content -->
       <main role="main" class="main-content">
@@ -254,6 +233,7 @@ class GolfMetaApp extends connect(store)(LitElement) {
       <snack-bar ?active="${this._snackbarOpened}">
         You are now ${this._offline ? 'offline' : 'online'}.
       </snack-bar>
+
     `;
   }
 
@@ -272,17 +252,11 @@ class GolfMetaApp extends connect(store)(LitElement) {
     auth.onAuthStateChanged((user) => {
       if (user) {
         // User is signed in.
-        console.log('user', user);
         this.user = user;
-        console.log('set signedIn to true');
         this.signedIn = true;
-        console.log('signed in', this.signedIn);
         this.num++;
-        //this.requestUpdate();
-        console.log(this.num);
       } else {
         // No user is signed in.
-        console.log('no user');
         this.user = false;
         this.signedIn = false;
         this.num++;
@@ -291,7 +265,6 @@ class GolfMetaApp extends connect(store)(LitElement) {
   }
 
   updateNum(){
-    console.log('update num');
     this.num++;
   }
 
