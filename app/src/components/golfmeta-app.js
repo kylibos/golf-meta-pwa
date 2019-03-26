@@ -53,7 +53,7 @@ class GolfMetaApp extends connect(store)(LitElement) {
       _offline: { type: Boolean },
       user: {type: Object},
       num: {type: Number},
-      _signedIn: {type: Boolean}
+      signedIn: {type: Boolean}
     };
   }
 
@@ -210,8 +210,8 @@ class GolfMetaApp extends connect(store)(LitElement) {
       <app-header condenses reveals effects="waterfall">
 
         <app-toolbar class="toolbar-top">
-          <div main-title>${this.appTitle}</div>
-          ${this._signedIn ? html`<div @click="${this.handleLogout}">Sign Out</div>` : html`<div @click="${this.popSignIn}">Sign In</div>`}
+          <div main-title>${this.appTitle} ${this.signedIn}</div>
+          ${this.signedIn ? html`<div @click="${this.handleLogout}">Sign Out</div>` : html`<div @click="${this.popSignIn}">Sign In</div>`}
           
         </app-toolbar>
       </app-header>
@@ -300,12 +300,10 @@ class GolfMetaApp extends connect(store)(LitElement) {
 
     var provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider).then(function(result) {
-  console.log(result);
   // This gives you a Google Access Token. You can use it to access the Google API.
   var token = result.credential.accessToken;
   // The signed-in user info.
   var user = result.user;
-  console.log(user);
 
   store.dispatch(signInUser(result.user));
   // ...
@@ -356,8 +354,7 @@ class GolfMetaApp extends connect(store)(LitElement) {
   }
 
   stateChanged(state) {
-    console.log('sate',state);
-    this._signedIn = state.user.signedIn;
+    this.signedIn = state.user.signedIn;
     this._page = state.app.page;
     this._offline = state.app.offline;
     this._snackbarOpened = state.app.snackbarOpened;
