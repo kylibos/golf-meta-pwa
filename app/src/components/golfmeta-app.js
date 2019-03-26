@@ -255,7 +255,9 @@ class GolfMetaApp extends connect(store)(LitElement) {
     auth.onAuthStateChanged((user) => {
       if (user) {
         store.dispatch(signInUser(user));
-        this.shadowRoot.getElementById('signInDialog').close();
+        if (typeof this.shadowRoot.getElementById('signInDialog').close == 'function'){
+          this.shadowRoot.getElementById('signInDialog').close();
+        }
       } else {
         store.dispatch(signOutUser());
       }
