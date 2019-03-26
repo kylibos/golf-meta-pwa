@@ -1,28 +1,37 @@
-import { SIGNINUSER, SIGNOUTUSER } from '../actions/user.js';
+import { SIGN_IN_USER, SIGN_OUT_USER } from '../actions/user.js';
+import { firestore } from '../firebase.js';
+import { auth } from '../firebase.js';
 
 const INITIAL_STATE = {
   displayName: '',
   email: '',
-  loggedIn: false
+  signedIn: false
 };
 
 const user = (state = INITIAL_STATE, action) => {
+  console.log('action xuz');
+  console.log(action);
   switch (action.type) {
-    case SIGNINUSER:
+    case SIGN_IN_USER:
+
+      const user = action.user;
+      console.log('reducer: ', user.displayName);
       return {
-        displayName: 'fart dooty',
-        email: 'farty@party.com',
-        loggedIn: true
+        ...state,
+        displayName: user.displayName,
+        email: user.email,
+        signedIn: true
       };
-    case DECREMENT:
+    case SIGN_OUT_USER:
       return {
+        ...state,
         displayName: '',
         email: '',
-        loggedIn: false
+        signedIn: false
       };
     default:
       return state;
   }
 };
 
-export default counter;
+export default user;

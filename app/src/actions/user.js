@@ -1,14 +1,15 @@
-export const SIGNINUSER = 'SIGNINUSER';
-export const SIGNOUTUSER = 'SIGNOUTUSER';
+export const SIGN_IN_USER = 'SIGN_IN_USER';
+export const SIGN_OUT_USER = 'SIGN_OUT_USER';
 
-export const signInUser = () => {
+export const signInUser = (user) => {
   return {
-    type: SIGNINUSER
+    type: SIGN_IN_USER,
+    user
   };
 };
 
 export const signOutUser = () => {
   return {
-    type: SIGNOUTUSER
+    type: SIGN_OUT_USER
   };
 };

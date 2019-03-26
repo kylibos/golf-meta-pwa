@@ -26,6 +26,11 @@ import {
   updateDrawerState
 } from '../actions/app.js';
 
+import {
+  signInUser,
+  signOutUser
+} from '../actions/user.js';
+
 // These are the elements needed by this element.
 import '@polymer/app-layout/app-drawer/app-drawer.js';
 import '@polymer/app-layout/app-header/app-header.js';
@@ -48,13 +53,7 @@ class GolfMetaApp extends connect(store)(LitElement) {
       _offline: { type: Boolean },
       user: {type: Object},
       num: {type: Number},
-      signedIn: {
-        type: Boolean, 
-        reflect: true,
-        hasChanged(newVal, oldVal) {
-          console.log('newVal', newVal);
-        }
-      }
+      _signedIn: {type: Boolean}
     };
   }
 
@@ -212,7 +211,8 @@ class GolfMetaApp extends connect(store)(LitElement) {
 
         <app-toolbar class="toolbar-top">
           <div main-title>${this.appTitle}</div>
-          <div @click="${this.popSignIn}">Sign In</div>
+          ${this._signedIn ? html`<div @click="${this.handleLogout}">Sign Out</div>` : html`<div @click="${this.popSignIn}">Sign In</div>`}
+          
         </app-toolbar>
       </app-header>
       
@@ -250,20 +250,14 @@ class GolfMetaApp extends connect(store)(LitElement) {
     // To force all event listeners for gestures to be passive.
     // See https://www.polymer-project.org/3.0/docs/devguide/settings#setting-passive-touch-gestures
     setPassiveTouchGestures(true);
-    this.signedIn = false;
     this.num = 99;
 
     auth.onAuthStateChanged((user) => {
       if (user) {
-        // User is signed in.
-        this.user = user;
-        this.signedIn = true;
-        this.num++;
+        store.dispatch(signInUser(user));
+        this.shadowRoot.getElementById('signInDialog').close();
       } else {
-        // No user is signed in.
-        this.user = false;
-        this.signedIn = false;
-        this.num++;
+        store.dispatch(signOutUser());
       }
     });
   }
@@ -310,6 +304,8 @@ class GolfMetaApp extends connect(store)(LitElement) {
   // The signed-in user info.
   var user = result.user;
   console.log(user);
+
+  store.dispatch(signInUser(result.user));
   // ...
 }).catch(function(error) {
   console.log(error);
@@ -322,6 +318,8 @@ class GolfMetaApp extends connect(store)(LitElement) {
   var credential = error.credential;
   // ...
 });
+
+
   }
 
   handleLogout(){
@@ -356,6 +354,8 @@ class GolfMetaApp extends connect(store)(LitElement) {
   }
 
   stateChanged(state) {
+    console.log('sate',state);
+    this._signedIn = state.user.signedIn;
     this._page = state.app.page;
     this._offline = state.app.offline;
     this._snackbarOpened = state.app.snackbarOpened;
