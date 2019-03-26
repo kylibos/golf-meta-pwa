@@ -9,13 +9,10 @@ const INITIAL_STATE = {
 };
 
 const user = (state = INITIAL_STATE, action) => {
-  console.log('action xuz');
-  console.log(action);
   switch (action.type) {
     case SIGN_IN_USER:
 
       const user = action.user;
-      console.log('reducer: ', user.displayName);
       return {
         ...state,
         displayName: user.displayName,
