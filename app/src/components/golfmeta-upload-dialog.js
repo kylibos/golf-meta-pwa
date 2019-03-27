@@ -49,7 +49,9 @@ class GolfmetaUploadDialog extends connect(store)(LitElement) {
     this.waitingClass = 'showWaiting';
   }
 
-  tester(e){
+  getLocalFile(e){
+    // Check the filesize
+
     this.gotClass = 'showGot';
     this.waitingClass = 'hideWaiting';
     //console.log(e.target.files[0]);
@@ -77,7 +79,15 @@ class GolfmetaUploadDialog extends connect(store)(LitElement) {
   }
 
   uploadFile(){
-    console.log(this.shadowRoot.getElementById('videoFile'));
+    if (this.videoFile.size > 10000000){
+      alert('file too big');
+      return;
+    }
+
+    if (!this.signedIn){
+      alert('You must login');
+      return;
+    }
 
     // Get sprout token from firebase functions
     fetch('https://us-central1-golf-meta-dev.cloudfunctions.net/getSproutToken')
@@ -127,7 +137,7 @@ class GolfmetaUploadDialog extends connect(store)(LitElement) {
 
   render() {
     return html`
-      <input class="fileInput" accept="video/*" id="videoFileInput" @change="${this.tester}" type="file" />
+      <input class="fileInput" accept="video/*" id="videoFileInput" @change="${this.getLocalFile}" type="file" />
       
       <div class="${this.gotClass}">
         <div>
@@ -150,6 +160,7 @@ class GolfmetaUploadDialog extends connect(store)(LitElement) {
 
   stateChanged(state) {
     this.userId = state.user.id;
+    this.signedIn = state.user.signedIn;
   }
 }
 

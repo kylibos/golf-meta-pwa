@@ -16,7 +16,7 @@ import { connect } from 'pwa-helpers/connect-mixin.js';
 import { SharedStyles } from './shared-styles.js';
 import {PolymerElement} from '@polymer/polymer';
 import { plusIcon } from './my-icons.js';
-import { GolfmetaUploadDialog } from './golfmeta-upload-dialog.js';
+import './golfmeta-upload-dialog.js';
 
 import { store } from '../store.js';
 
@@ -59,7 +59,6 @@ class GolfMetaHome extends connect(store)(PageViewElement) {
       <div>Home</div>
       <div>Home</div>
       <div>Home</div>
-      <div>${this.signedIn}</div>
       <paper-fab id="addVideoButton" src="${plusIcon}" @click="${this.addVideoButtonClicked}"></paper-fab>
 
       <paper-dialog id="uploadVideoDialog">

@@ -238,6 +238,9 @@ class GolfMetaApp extends connect(store)(LitElement) {
         <div @click="${this.signInGoogle}">Sign-In with Google</div>
       </paper-dialog>
 
+      <paper-dialog id="usernameDialog">
+        <div>Create a username</div>
+      </paper-dialog>
     `;
   }
 
