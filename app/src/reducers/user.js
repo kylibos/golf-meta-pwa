@@ -15,6 +15,7 @@ const user = (state = INITIAL_STATE, action) => {
       const user = action.user;
       return {
         ...state,
+        id: user.uid,
         displayName: user.displayName,
         email: user.email,
         signedIn: true
