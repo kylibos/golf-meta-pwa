@@ -19,6 +19,11 @@ import { plusIcon } from './my-icons.js';
 import './golfmeta-upload-dialog.js';
 
 import { store } from '../store.js';
+import { firestore } from '../firebase.js';
+
+import {
+  updateSwings
+} from '../actions/swings.js';
 
 import '@polymer/paper-dialog/paper-dialog.js';
 import '@polymer/paper-button/paper-button.js';
@@ -46,19 +51,31 @@ class GolfMetaHome extends connect(store)(PageViewElement) {
     };
   }
 
+  constructor(){
+    super();
+  }
+
+  firstUpdated(){
+    console.log('first update');
+    var swings = [];
+    // Connect to firebase here and send the results to the action to get the videos
+    firestore.collection('swings').get()
+    .then(function(querySnapshot) {
+        querySnapshot.forEach(function(doc) {
+            swings[doc.id]=doc.data();
+        });
+      // Send the data to the store
+      store.dispatch(updateSwings(swings));
+    })
+    .catch(function(error) {
+        console.log("Error getting documents: ", error);
+    });
+
+  }
 
   render() {
     return html`
-      <div>Home</div>
-      <div>Home</div>
-      <div>Home</div>
-      <div>Home</div>
-      <div>Home</div>
-      <div>Home</div>
-      <div>Home</div>
-      <div>Home</div>
-      <div>Home</div>
-      <div>Home</div>
+      Home Page
       <paper-fab id="addVideoButton" src="${plusIcon}" @click="${this.addVideoButtonClicked}"></paper-fab>
 
       <paper-dialog id="uploadVideoDialog">
@@ -76,7 +93,9 @@ class GolfMetaHome extends connect(store)(PageViewElement) {
   }
 
   stateChanged(state) {
+    console.log(state);
     this.signedIn = state.user.signedIn;
+    this.swings = state.swings.swings;
   }
 
 }
