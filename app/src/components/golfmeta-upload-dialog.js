@@ -105,7 +105,7 @@ class GolfmetaUploadDialog extends connect(store)(LitElement) {
               size: this.videoFile.size,
               type: this.videoFile.type,
               name: this.videoFile.name,
-              status: 'uploading'
+              state: 'uploading'
           })
           .then((docRef) => {
               console.log("Document written with ID: ", docRef.id);
