@@ -9,7 +9,8 @@ class GolfmetaUploadDialog extends connect(store)(LitElement) {
   static get properties() {
     return {
       videoSelected: {type: Boolean},
-
+      lastUploadedSwingId: {type: String},
+      swingListenerUnsubscribe: {type: Object}
     };
   }
 
@@ -65,8 +66,6 @@ class GolfmetaUploadDialog extends connect(store)(LitElement) {
   uploadToSprout(token, docId){
     var formData  = new FormData();
     formData.append('source_video', this.videoFile);
-    //formData.append('folder_id', 'golfMeta');
-    console.log('doc id:', docId);
     formData.append('title', docId);
     formData.append('token', token);
     formData.append('notification_url', 'https://us-central1-golf-meta-dev.cloudfunctions.net/sproutWebHook');
@@ -74,7 +73,7 @@ class GolfmetaUploadDialog extends connect(store)(LitElement) {
       method: 'POST',
       body: formData
     }).then((response) => {
-      console.log('upload response: ', response);
+      //console.log('upload response: ', response);
     });
   }
 
@@ -108,9 +107,15 @@ class GolfmetaUploadDialog extends connect(store)(LitElement) {
               state: 'uploading'
           })
           .then((docRef) => {
-              console.log("Document written with ID: ", docRef.id);
-              //Upload to sprout
-              response.json().then((data) => this.uploadToSprout(data.token, docRef.id));
+            this.lastUploadedSwingId = docRef.id;
+            this.swingListenerUnsubscribe = firestore.collection('swings').doc(this.lastUploadedSwingId).onSnapshot((doc) => {
+              //console.log("Current data: ", doc.data());
+              if (doc.data().state == 'deployed'){
+                alert('Your video is ready!!!');
+                this.swingListenerUnsubscribe();
+              }
+            });
+            response.json().then((data) => this.uploadToSprout(data.token, docRef.id));
           })
           .catch((error) => {
               console.error("Error adding document: ", error);
@@ -138,7 +143,7 @@ class GolfmetaUploadDialog extends connect(store)(LitElement) {
   render() {
     return html`
       <input class="fileInput" accept="video/*" id="videoFileInput" @change="${this.getLocalFile}" type="file" />
-      
+      <div>uploaded id: ${this.lastUploadedSwingId}</div>
       <div class="${this.gotClass}">
         <div>
           <video width="150" height="150">
