@@ -10,6 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 import { html, css } from 'lit-element';
 import { PageViewElement } from './page-view-element.js';
+import { repeat } from 'lit-html/directives/repeat.js';
 import { connect } from 'pwa-helpers/connect-mixin.js';
 
 // These are the shared styles needed by this element.
@@ -47,7 +48,9 @@ class GolfMetaHome extends connect(store)(PageViewElement) {
 
   static get properties() {
     return { 
-      signedIn: { type: Boolean }
+      signedIn: { type: Boolean },
+      swings: { type: Array  },
+      x: { type: Array}
     };
   }
 
@@ -56,13 +59,14 @@ class GolfMetaHome extends connect(store)(PageViewElement) {
   }
 
   firstUpdated(){
-    console.log('first update');
     var swings = [];
+    var i;
     // Connect to firebase here and send the results to the action to get the videos
     firestore.collection('swings').get()
     .then(function(querySnapshot) {
         querySnapshot.forEach(function(doc) {
-            swings[doc.id]=doc.data();
+            var i = swings.push(doc.data());
+            swings[i-1].key = doc.id;
         });
       // Send the data to the store
       store.dispatch(updateSwings(swings));
@@ -75,7 +79,7 @@ class GolfMetaHome extends connect(store)(PageViewElement) {
 
   render() {
     return html`
-      Home Page
+      <div class="">${this.swings.map((item) => html`<img src="${item.sproutData.assets.thumbnails[0]}" />`)}</div>
       <paper-fab id="addVideoButton" src="${plusIcon}" @click="${this.addVideoButtonClicked}"></paper-fab>
 
       <paper-dialog id="uploadVideoDialog">
@@ -93,9 +97,13 @@ class GolfMetaHome extends connect(store)(PageViewElement) {
   }
 
   stateChanged(state) {
-    console.log(state);
     this.signedIn = state.user.signedIn;
     this.swings = state.swings.swings;
+    //console.log(this.swings);
+    //console.log(this.swings.length);
+    //console.log(this.swings[0]);
+
+    this.x = [{num:99},{num:4},{num:5}];
   }
 
 }
