@@ -88,6 +88,21 @@ class GolfmetaUploadDialog extends connect(store)(LitElement) {
       return;
     }
 
+    var clubSelect = this.shadowRoot.getElementById('club');
+    var club = clubSelect.options[clubSelect.selectedIndex].value;
+    var handicapSelect = this.shadowRoot.getElementById('handicap');
+    var handicap = handicapSelect.options[handicapSelect.selectedIndex].value;
+
+    if (club == 'x'){
+      alert('you must choose a club');
+      return;
+    }
+
+    if (handicap == 'x'){
+      alert('you must enter a handicap');
+      return;
+    }
+
     // Get sprout token from firebase functions
     fetch('https://us-central1-golf-meta-dev.cloudfunctions.net/getSproutToken')
       .then(
@@ -104,7 +119,9 @@ class GolfmetaUploadDialog extends connect(store)(LitElement) {
               size: this.videoFile.size,
               type: this.videoFile.type,
               name: this.videoFile.name,
-              state: 'uploading'
+              state: 'uploading',
+              club: club,
+              handicap: handicap
           })
           .then((docRef) => {
             this.lastUploadedSwingId = docRef.id;
@@ -113,6 +130,7 @@ class GolfmetaUploadDialog extends connect(store)(LitElement) {
               if (doc.data().state == 'deployed'){
                 alert('Your video is ready!!!');
                 this.swingListenerUnsubscribe();
+                // send an event to close the upload dialog
               }
             });
             response.json().then((data) => this.uploadToSprout(data.token, docRef.id));
@@ -141,6 +159,8 @@ class GolfmetaUploadDialog extends connect(store)(LitElement) {
   }
 
   render() {
+    var handicaps = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25];
+    var clubs = ['Driver', '3w', '5w', '1i', '2i', '3i', '4i'];
     return html`
       <input class="fileInput" accept="video/*" id="videoFileInput" @change="${this.getLocalFile}" type="file" />
       <div>uploaded id: ${this.lastUploadedSwingId}</div>
@@ -152,7 +172,20 @@ class GolfmetaUploadDialog extends connect(store)(LitElement) {
           </video>
         </div>
         <div>
-          <input id="handicapInput" type="text" />
+          <label for="handicap">Handicap</label>
+          <select id="handicap">
+            <option value="x"></option>
+            <option value="none">I don't have a Handicap</option>
+            ${handicaps.map((item) => html`<option value="${item}">${item}</option>`)}
+          </select>
+        </div>
+        <div>
+          <label for="club">Club</label>
+          <select id="club">
+            <option value="x"></option>
+            <option value="none">I don't want to enter a club</option>
+            ${clubs.map((item) => html`<option value="${item}">${item}</option>`)}
+          </select>
         </div>
         <div>
           <button @click="${this.uploadFile}">Save</button>
