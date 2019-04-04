@@ -13,13 +13,24 @@ const user = (state = INITIAL_STATE, action) => {
     case SIGN_IN_USER:
 
       const user = action.user;
-      return {
-        ...state,
-        id: user.uid,
-        displayName: user.displayName,
-        email: user.email,
-        signedIn: true
-      };
+      if (typeof user.username == 'undefined'){
+        return {
+          ...state,
+          id: user.uid,
+          displayName: user.displayName,
+          email: user.email,
+          signedIn: true
+        };
+      } else {
+        return {
+          ...state,
+          id: user.uid,
+          displayName: user.displayName,
+          email: user.email,
+          username: user.username,
+          signedIn: true
+        };
+      }
     case SIGN_OUT_USER:
       return {
         ...state,
