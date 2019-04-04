@@ -49,6 +49,7 @@ class GolfMetaHome extends connect(store)(PageViewElement) {
     return { 
       signedIn: { type: Boolean },
       swings: { type: Array  },
+      showSinglePlayerModal: {type: Boolean },
       x: { type: Array}
     };
   }
@@ -78,13 +79,27 @@ class GolfMetaHome extends connect(store)(PageViewElement) {
 
   render() {
     return html`
-      <div class="">${this.swings.map((item) => html`<img src="${item.sproutData.assets.thumbnails[0]}" />`)}</div>
+      <div id="swingVideoContainer">
+        ${this.swings.map((item) => html`<a href="/swingvideo?sw=${item.key}"><img id="${item.key}" src="${item.sproutData.assets.thumbnails[0]}" /></a>`)}
+      </div>
       <paper-fab id="addVideoButton" src="${plusIcon}" @click="${this.addVideoButtonClicked}"></paper-fab>
 
       <paper-dialog id="uploadVideoDialog">
         <golfmeta-upload-dialog></golfmeta-upload-dialog>
-      <paper-dialog>
+      </paper-dialog>
+
+      <div id="singlePlayerModal" class="${this.showSinglePlayerModal ? 'showSinglePlayerModal' : 'hideSinglePlayerModal'}">
+        Modal
+      </div>
     `;
+  }
+
+  goToVideo(e){
+    console.log(e.target.getAttribute('id'));
+    // Show video screen
+
+console.log('show mpda');
+    this.showSinglePlayerModal = true;
   }
 
   addVideoButtonClicked(){

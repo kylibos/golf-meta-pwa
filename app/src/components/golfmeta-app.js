@@ -210,16 +210,16 @@ class GolfMetaApp extends connect(store)(LitElement) {
       <app-header condenses reveals effects="waterfall">
 
         <app-toolbar class="toolbar-top">
-          <div main-title>${this.appTitle} ${this.signedIn}</div>
+          <div main-title>${this.appTitle}</div>
           ${this.signedIn ? html`<div @click="${this.handleLogout}">Sign Out</div>` : html`<div @click="${this.popSignIn}">Sign In</div>`}
           
         </app-toolbar>
       </app-header>
-      
 
       <!-- Main content -->
       <main role="main" class="main-content">
         <golfmeta-home class="page" ?active="${this._page === 'home'}"></golfmeta-home>
+        <golfmeta-swingvideo class="page" ?active="${this._page === 'swingvideo'}"></golfmeta-swingvideo>
         <my-view2 class="page" ?active="${this._page === 'view2'}"></my-view2>
         <my-view3 class="page" ?active="${this._page === 'view3'}"></my-view3>
         <my-view404 class="page" ?active="${this._page === 'view404'}"></my-view404>
@@ -261,6 +261,7 @@ class GolfMetaApp extends connect(store)(LitElement) {
         if (typeof this.shadowRoot.getElementById('signInDialog').close == 'function'){
           this.shadowRoot.getElementById('signInDialog').close();
         }
+        firestore.collection('users').doc(user.uid).set({lastSignIn: firebase.firestore.FieldValue.serverTimestamp()}, {merge:true});
       } else {
         store.dispatch(signOutUser());
       }
@@ -356,12 +357,18 @@ class GolfMetaApp extends connect(store)(LitElement) {
     store.dispatch(updateDrawerState(e.target.opened));
   }
 
+  checkForUsername(user){
+    console.log('check for username');
+    //console.log(user);
+  }
+
   stateChanged(state) {
     this.signedIn = state.user.signedIn;
     this._page = state.app.page;
     this._offline = state.app.offline;
     this._snackbarOpened = state.app.snackbarOpened;
     this._drawerOpened = state.app.drawerOpened;
+    this.checkForUsername(state.user);
   }
 }
 
