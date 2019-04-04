@@ -31,6 +31,22 @@
       "weight": 1
     }
   },
+    "/swingvideo": {
+    "src/components/golfmeta-app.js": {
+      "crossorigin": "anonymous",
+      "type": "script",
+      "weight": 1
+    },
+    "src/components/golfmeta-swingvideo.js": {
+      "crossorigin": "anonymous",
+      "type": "script",
+      "weight": 1
+    },
+    "node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js": {
+      "type": "script",
+      "weight": 1
+    }
+  },
   "/view2": {
     "src/components/golfmeta-app.js": {
       "crossorigin": "anonymous",
